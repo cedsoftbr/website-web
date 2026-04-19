@@ -3,61 +3,69 @@ import { useState } from 'react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { toast } from '@/hooks/use-toast'
-import Turnstile from 'react-cloudflare-turnstile'
 
 const Index = () => {
-  console.log('Turnstile import:', Turnstile);
   const [email, setEmail] = useState('')
   const [loading, setLoading] = useState(false)
-  const [turnstileToken, setTurnstileToken] = useState<string | null>(null)
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     if (!email) return
-    
-    if (!turnstileToken) {
-      toast({
-        variant: 'destructive',
-        title: 'Segurança',
-        description: 'Por favor, complete a verificação "Não sou um robô".',
-      })
-      return
-    }
 
     setLoading(true)
     
     try {
-      let apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:8000'
-      // Limpa barras extras no final da URL para evitar erro de rota ou CORS
-      apiUrl = apiUrl.replace(/\/+$/, '')
-      
-      const response = await fetch(`${apiUrl}/subscribe`, {
+      const apiKey = import.meta.env.VITE_BREVO_API_KEY
+      const adminEmail = import.meta.env.VITE_BREVO_ADMIN_EMAIL
+      const senderEmail = import.meta.env.VITE_BREVO_SENDER_EMAIL
+      const senderName = import.meta.env.VITE_BREVO_SENDER_NAME
+
+      if (!adminEmail) {
+        throw new Error('E-mail de destino não configurado (VITE_BREVO_ADMIN_EMAIL)')
+      }
+
+      const response = await fetch('https://api.brevo.com/v3/smtp/email', {
         method: 'POST',
         headers: {
+          'api-key': apiKey,
           'Content-Type': 'application/json',
+          'Accept': 'application/json',
         },
-        body: JSON.stringify({ 
-          email,
-          cf_turnstile_token: turnstileToken
+        body: JSON.stringify({
+          sender: { name: senderName || 'Site CEDSoft', email: senderEmail },
+          to: [{ email: adminEmail }],
+          subject: 'Nova Inscrição - CEDSoft Soluções',
+          htmlContent: `
+            <html>
+              <body>
+                <h2>Nova Inscrição Detectada</h2>
+                <p>Um usuário interessado deixou o e-mail no site.</p>
+                <p><strong>E-mail do Cliente:</strong> ${email}</p>
+                <br>
+                <hr>
+                <p style="font-size: 12px; color: #666;">Este e-mail foi gerado automaticamente pelo formulário do site.</p>
+              </body>
+            </html>
+          `
         }),
       })
 
       if (!response.ok) {
         const errorData = await response.json()
-        throw new Error(errorData.detail || 'Erro ao se cadastrar')
+        throw new Error(errorData.message || 'Erro ao enviar e-mail')
       }
 
       toast({
-        title: 'Cadastro confirmado',
-        description: `Avisaremos ${email} assim que estivermos no ar.`,
+        title: 'Pedido enviado!',
+        description: `Obrigado! Entraremos em contato através do e-mail ${email}.`,
       })
       setEmail('')
-      setTurnstileToken(null) // Reset token after success
     } catch (error: any) {
+      console.error('Erro Brevo:', error)
       toast({
         variant: 'destructive',
         title: 'Ops! Algo deu errado',
-        description: error.message || 'Não foi possível salvar seu email. Tente novamente mais tarde.',
+        description: 'Não foi possível enviar sua solicitação. O Brevo pode bloquear chamadas diretas do navegador por segurança (CORS).',
       })
     } finally {
       setLoading(false)
@@ -66,17 +74,14 @@ const Index = () => {
 
   return (
     <main className="relative min-h-screen overflow-hidden bg-background bg-hero">
-      {/* Background grid */}
       <div className="absolute inset-0 bg-grid opacity-60" aria-hidden="true" />
 
-      {/* Top bar */}
       <header className="relative z-10 mx-auto flex w-full max-w-6xl items-center justify-between px-6 py-6">
         <span className="font-display text-lg font-semibold tracking-tight text-foreground">
           CEDSoft <span className="text-muted-foreground font-normal">Soluções</span>
         </span>
       </header>
 
-      {/* Hero */}
       <section className="relative z-10 mx-auto flex min-h-[calc(100vh-96px)] w-full max-w-3xl flex-col items-center justify-center px-6 pb-20 text-center">
         <h1 className="font-display text-5xl font-bold leading-[1.05] tracking-tight text-foreground sm:text-6xl md:text-7xl">
           Algo novo está sendo
@@ -90,11 +95,7 @@ const Index = () => {
           a saber quando estivermos no ar.
         </p>
 
-        {/* Form */}
-        <form
-          onSubmit={handleSubmit}
-          className="mt-10 flex w-full max-w-md flex-col gap-3"
-        >
+        <form onSubmit={handleSubmit} className="mt-10 flex w-full max-w-md flex-col gap-3">
           <div className="flex w-full flex-col gap-3 sm:flex-row">
             <div className="relative flex-1">
               <Mail className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-500" />
@@ -116,28 +117,12 @@ const Index = () => {
               <ArrowRight className="ml-1 h-4 w-4 transition-transform group-hover:translate-x-0.5" />
             </Button>
           </div>
-          
           <p className="mt-2 font-mono text-xs text-muted-foreground/70">
-            Sem spam. Só uma mensagem quando lançarmos.
+            Entraremos em contato em breve.
           </p>
-
-          <div className="flex justify-center mt-2">
-            {(() => {
-              const TurnstileComponent = (Turnstile as any).default || Turnstile;
-              return (
-                <TurnstileComponent
-                  turnstileSiteKey={import.meta.env.VITE_CLOUDFLARE_TURNSTILE_SITE_KEY || '1x00000000000000000000AA'}
-                  callback={(token: string) => setTurnstileToken(token)}
-                  expiredCallback={() => setTurnstileToken(null)}
-                  theme="light"
-                />
-              );
-            })()}
-          </div>
         </form>
       </section>
 
-      {/* Footer */}
       <footer className="absolute bottom-0 left-0 right-0 z-10 mx-auto flex w-full max-w-6xl items-center justify-center px-6 py-6 font-mono text-xs text-muted-foreground/70">
         <span>© {new Date().getFullYear()} CEDSoft Soluções</span>
       </footer>
