@@ -1,77 +1,10 @@
-import { ArrowRight, Mail } from 'lucide-react'
-import { useState } from 'react'
-import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
-import { toast } from '@/hooks/use-toast'
+# WhatsApp Configuration
+VITE_WHATSAPP_NUMBER=5541999999999
 
-const Index = () => {
-  const [email, setEmail] = useState('')
-  const [loading, setLoading] = useState(false)
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    if (!email) return
-
-    setLoading(true)
-    
-    try {
-      const apiKey = import.meta.env.VITE_BREVO_API_KEY
-      const adminEmail = import.meta.env.VITE_BREVO_ADMIN_EMAIL
-      const senderEmail = import.meta.env.VITE_BREVO_SENDER_EMAIL
-      const senderName = import.meta.env.VITE_BREVO_SENDER_NAME
-
-      // Verificações de segurança no Front-end
-      if (!apiKey) throw new Error('API Key do Brevo não configurada (VITE_BREVO_API_KEY)')
-      if (!adminEmail) throw new Error('E-mail de destino não configurado (VITE_BREVO_ADMIN_EMAIL)')
-      if (!senderEmail) throw new Error('E-mail de remetente não configurado (VITE_BREVO_SENDER_EMAIL)')
-
-      const response = await fetch('https://api.brevo.com/v3/smtp/email', {
-        method: 'POST',
-        headers: {
-          'api-key': apiKey,
-          'Content-Type': 'application/json',
-          'Accept': 'application/json',
-        },
-        body: JSON.stringify({
-          sender: { name: senderName || 'Site CEDSoft', email: senderEmail },
-          to: [{ email: adminEmail }],
-          subject: 'Nova Inscrição - CEDSoft Soluções',
-          htmlContent: `
-            <html>
-              <body>
-                <h2>Nova Inscrição Detectada</h2>
-                <p>Um usuário interessado deixou o e-mail no site.</p>
-                <p><strong>E-mail do Cliente:</strong> ${email}</p>
-                <br>
-                <hr>
-                <p style="font-size: 12px; color: #666;">Este e-mail foi gerado automaticamente pelo formulário do site.</p>
-              </body>
-            </html>
-          `
-        }),
-      })
-
-      if (!response.ok) {
-        const errorData = await response.json()
-        throw new Error(errorData.message || `Erro ${response.status}: Falha na autenticação ou envio`)
-      }
-
-      toast({
-        title: 'Pedido enviado!',
-        description: `Obrigado! Entraremos em contato através do e-mail ${email}.`,
-      })
-      setEmail('')
-    } catch (error: any) {
-      console.error('Erro Detalhado:', error.message)
-      toast({
-        variant: 'destructive',
-        title: 'Ops! Algo deu errado',
-        description: error.message || 'Erro ao processar sua inscrição.',
-      })
-    } finally {
-      setLoading(false)
-    }
-  }
+# (Brevo and Cloudflare variables removed as they are no longer used)
+pNumber = import.meta.env.VITE_WHATSAPP_NUMBER || '5500000000000'
+  const whatsappMessage = encodeURIComponent('Olá! Vim pelo site da CEDSoft Soluções e gostaria de mais informações.')
+  const whatsappUrl = `https://wa.me/${whatsappNumber}?text=${whatsappMessage}`
 
   return (
     <main className="relative min-h-screen overflow-hidden bg-background bg-hero">
@@ -92,37 +25,24 @@ const Index = () => {
 
         <p className="mt-6 max-w-xl text-base leading-relaxed text-muted-foreground sm:text-lg">
           A <span className="font-medium text-foreground">CEDSoft Soluções</span> está
-          desenvolvendo soluções modernas em software. Deixe seu email e seja o primeiro
-          a saber quando estivermos no ar.
+          desenvolvendo soluções modernas em software. 
+          <br />
+          Precisa de uma solução agora? Entre em contato diretamente conosco.
         </p>
 
-        <form onSubmit={handleSubmit} className="mt-10 flex w-full max-w-md flex-col gap-3">
-          <div className="flex w-full flex-col gap-3 sm:flex-row">
-            <div className="relative flex-1">
-              <Mail className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-500" />
-              <Input
-                type="email"
-                required
-                value={email}
-                onChange={e => setEmail(e.target.value)}
-                placeholder="seu@email.com"
-                className="h-12 border-white/20 bg-white pl-10 text-slate-900 placeholder:text-slate-400 focus-visible:ring-brand"
-              />
-            </div>
-            <Button
-              type="submit"
-              disabled={loading}
-              className="group h-12 bg-brand px-6 font-medium text-brand-foreground shadow-glow transition-all hover:bg-brand/90 hover:shadow-[0_0_80px_hsl(var(--brand)/0.5)]"
-            >
-              {loading ? 'Enviando...' : 'Avise-me'}
-              <ArrowRight className="ml-1 h-4 w-4 transition-transform group-hover:translate-x-0.5" />
-            </Button>
-          </div>
+        <div className="mt-10">
+          <Button
+            onClick={() => window.open(whatsappUrl, '_blank')}
+            className="group h-12 bg-[#25D366] hover:bg-[#20ba5a] px-8 font-medium text-white shadow-glow transition-all hover:shadow-[0_0_80px_rgba(37,211,102,0.4)]"
+          >
+            <MessageCircle className="mr-2 h-5 w-5" />
+            Falar no WhatsApp
+          </Button>
+        </div>
 
-          <p className="mt-2 font-mono text-xs text-muted-foreground/70">
-            Entraremos em contato em breve.
-          </p>
-        </form>
+        <p className="mt-6 font-mono text-xs text-muted-foreground/70">
+          Atendimento ágil e personalizado.
+        </p>
       </section>
 
       <footer className="absolute bottom-0 left-0 right-0 z-10 mx-auto flex w-full max-w-6xl items-center justify-center px-6 py-6 font-mono text-xs text-muted-foreground/70">
