@@ -3,14 +3,25 @@ import { useState } from 'react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { toast } from '@/hooks/use-toast'
+import Turnstile from 'react-cloudflare-turnstile'
 
 const Index = () => {
   const [email, setEmail] = useState('')
   const [loading, setLoading] = useState(false)
+  const [turnstileToken, setTurnstileToken] = useState<string | null>(null)
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     if (!email) return
+
+    if (!turnstileToken) {
+      toast({
+        variant: 'destructive',
+        title: 'Segurança',
+        description: 'Por favor, complete a verificação "Não sou um robô".',
+      })
+      return
+    }
 
     setLoading(true)
     
@@ -60,12 +71,13 @@ const Index = () => {
         description: `Obrigado! Entraremos em contato através do e-mail ${email}.`,
       })
       setEmail('')
+      setTurnstileToken(null)
     } catch (error: any) {
       console.error('Erro Brevo:', error)
       toast({
         variant: 'destructive',
         title: 'Ops! Algo deu errado',
-        description: 'Não foi possível enviar sua solicitação. O Brevo pode bloquear chamadas diretas do navegador por segurança (CORS).',
+        description: 'Não foi possível enviar sua solicitação.',
       })
     } finally {
       setLoading(false)
@@ -117,6 +129,16 @@ const Index = () => {
               <ArrowRight className="ml-1 h-4 w-4 transition-transform group-hover:translate-x-0.5" />
             </Button>
           </div>
+
+          <div className="flex justify-center mt-2">
+            <Turnstile
+              sitekey={import.meta.env.VITE_CLOUDFLARE_TURNSTILE_SITE_KEY || '1x00000000000000000000AA'}
+              onVerify={(token: string) => setTurnstileToken(token)}
+              onExpire={() => setTurnstileToken(null)}
+              theme="light"
+            />
+          </div>
+
           <p className="mt-2 font-mono text-xs text-muted-foreground/70">
             Entraremos em contato em breve.
           </p>
