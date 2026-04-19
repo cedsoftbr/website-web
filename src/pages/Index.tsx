@@ -27,7 +27,10 @@ const Index = () => {
     setLoading(true)
     
     try {
-      const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:8000'
+      let apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:8000'
+      // Remove trailing slash if exists
+      apiUrl = apiUrl.replace(/\/$/, '')
+      
       const response = await fetch(`${apiUrl}/subscribe`, {
         method: 'POST',
         headers: {

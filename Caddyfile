@@ -1,0 +1,14 @@
+:{$PORT} {
+    root * dist
+    file_server
+
+    # Proxy reverso para a API interna
+    handle_path /api/* {
+        reverse_proxy http://website-api.railway.internal:8000
+    }
+
+    # Suporte para Single Page Application (React)
+    handle {
+        try_files {path} /index.html
+    }
+}
