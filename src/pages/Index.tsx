@@ -87,6 +87,8 @@ const Index = () => {
     }
   }
 
+  const turnstileSiteKey = String(import.meta.env.VITE_CLOUDFLARE_TURNSTILE_SITE_KEY || '1x00000000000000000000AA');
+
   return (
     <main className="relative min-h-screen overflow-hidden bg-background bg-hero">
       <div className="absolute inset-0 bg-grid opacity-60" aria-hidden="true" />
@@ -136,7 +138,8 @@ const Index = () => {
           <div className="flex justify-center mt-2">
             {typeof TurnstileComponent === 'function' && (
               <TurnstileComponent
-                sitekey={import.meta.env.VITE_CLOUDFLARE_TURNSTILE_SITE_KEY || '1x00000000000000000000AA'}
+                sitekey={turnstileSiteKey}
+                siteKey={turnstileSiteKey}
                 onVerify={(token: string) => setTurnstileToken(token)}
                 onExpire={() => setTurnstileToken(null)}
                 theme="light"
