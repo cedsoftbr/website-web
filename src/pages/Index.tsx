@@ -10,6 +10,9 @@ const Index = () => {
   const [loading, setLoading] = useState(false)
   const [turnstileToken, setTurnstileToken] = useState<string | null>(null)
 
+  // Tratamento para garantir que o componente Turnstile seja uma função válida
+  const TurnstileComponent = (Turnstile as any).default || Turnstile;
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     if (!email) return
@@ -131,12 +134,14 @@ const Index = () => {
           </div>
 
           <div className="flex justify-center mt-2">
-            <Turnstile
-              sitekey={import.meta.env.VITE_CLOUDFLARE_TURNSTILE_SITE_KEY || '1x00000000000000000000AA'}
-              onVerify={(token: string) => setTurnstileToken(token)}
-              onExpire={() => setTurnstileToken(null)}
-              theme="light"
-            />
+            {typeof TurnstileComponent === 'function' && (
+              <TurnstileComponent
+                sitekey={import.meta.env.VITE_CLOUDFLARE_TURNSTILE_SITE_KEY || '1x00000000000000000000AA'}
+                onVerify={(token: string) => setTurnstileToken(token)}
+                onExpire={() => setTurnstileToken(null)}
+                theme="light"
+              />
+            )}
           </div>
 
           <p className="mt-2 font-mono text-xs text-muted-foreground/70">
