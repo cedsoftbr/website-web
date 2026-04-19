@@ -5,6 +5,9 @@ import { Input } from '@/components/ui/input'
 import { toast } from '@/hooks/use-toast'
 import Turnstile from 'react-cloudflare-turnstile'
 
+// Resolva o componente fora do ciclo de renderização para evitar Error #130
+const ActualTurnstile = (Turnstile as any).default || Turnstile;
+
 const Index = () => {
   const [email, setEmail] = useState('')
   const [loading, setLoading] = useState(false)
@@ -133,10 +136,9 @@ const Index = () => {
           </div>
 
           <div className="flex justify-center mt-2">
-            {siteKey && (
-              <Turnstile
+            {siteKey && typeof ActualTurnstile !== 'undefined' && (
+              <ActualTurnstile
                 sitekey={siteKey}
-                siteKey={siteKey}
                 onVerify={(token: string) => setTurnstileToken(token)}
                 onExpire={() => setTurnstileToken(null)}
                 theme="light"
