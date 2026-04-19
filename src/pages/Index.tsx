@@ -20,9 +20,10 @@ const Index = () => {
       const senderEmail = import.meta.env.VITE_BREVO_SENDER_EMAIL
       const senderName = import.meta.env.VITE_BREVO_SENDER_NAME
 
-      if (!adminEmail) {
-        throw new Error('E-mail de destino não configurado (VITE_BREVO_ADMIN_EMAIL)')
-      }
+      // Verificações de segurança no Front-end
+      if (!apiKey) throw new Error('API Key do Brevo não configurada (VITE_BREVO_API_KEY)')
+      if (!adminEmail) throw new Error('E-mail de destino não configurado (VITE_BREVO_ADMIN_EMAIL)')
+      if (!senderEmail) throw new Error('E-mail de remetente não configurado (VITE_BREVO_SENDER_EMAIL)')
 
       const response = await fetch('https://api.brevo.com/v3/smtp/email', {
         method: 'POST',
@@ -52,7 +53,7 @@ const Index = () => {
 
       if (!response.ok) {
         const errorData = await response.json()
-        throw new Error(errorData.message || 'Erro ao enviar e-mail')
+        throw new Error(errorData.message || `Erro ${response.status}: Falha na autenticação ou envio`)
       }
 
       toast({
@@ -61,11 +62,11 @@ const Index = () => {
       })
       setEmail('')
     } catch (error: any) {
-      console.error('Erro Brevo:', error)
+      console.error('Erro Detalhado:', error.message)
       toast({
         variant: 'destructive',
         title: 'Ops! Algo deu errado',
-        description: 'Não foi possível enviar sua solicitação.',
+        description: error.message || 'Erro ao processar sua inscrição.',
       })
     } finally {
       setLoading(false)
