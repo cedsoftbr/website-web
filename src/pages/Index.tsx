@@ -1,8 +1,8 @@
-# WhatsApp Configuration
-VITE_WHATSAPP_NUMBER=5541999999999
+import { MessageCircle } from 'lucide-react'
+import { Button } from '@/components/ui/button'
 
-# (Brevo and Cloudflare variables removed as they are no longer used)
-pNumber = import.meta.env.VITE_WHATSAPP_NUMBER || '5500000000000'
+const Index = () => {
+  const whatsappNumber = import.meta.env.VITE_WHATSAPP_NUMBER || '5500000000000'
   const whatsappMessage = encodeURIComponent('Olá! Vim pelo site da CEDSoft Soluções e gostaria de mais informações.')
   const whatsappUrl = `https://wa.me/${whatsappNumber}?text=${whatsappMessage}`
 
