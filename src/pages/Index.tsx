@@ -1,5 +1,5 @@
 import { ArrowRight, Mail } from 'lucide-react'
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { toast } from '@/hooks/use-toast'
@@ -10,15 +10,7 @@ const Index = () => {
   const [loading, setLoading] = useState(false)
   const [turnstileToken, setTurnstileToken] = useState<string | null>(null)
 
-  // Recupera a chave e garante que seja uma string
   const siteKey = import.meta.env.VITE_CLOUDFLARE_TURNSTILE_SITE_KEY || '1x00000000000000000000AA';
-  
-  useEffect(() => {
-    console.log('Configured Turnstile Site Key:', siteKey);
-  }, [siteKey]);
-
-  // Tratamento para garantir que o componente Turnstile seja uma função válida
-  const TurnstileComponent = (Turnstile as any).default || Turnstile;
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -141,9 +133,10 @@ const Index = () => {
           </div>
 
           <div className="flex justify-center mt-2">
-            {siteKey && typeof TurnstileComponent === 'function' && (
-              <TurnstileComponent
+            {siteKey && (
+              <Turnstile
                 sitekey={siteKey}
+                siteKey={siteKey}
                 onVerify={(token: string) => setTurnstileToken(token)}
                 onExpire={() => setTurnstileToken(null)}
                 theme="light"
