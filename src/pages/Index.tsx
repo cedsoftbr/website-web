@@ -1,5 +1,5 @@
 import { ArrowRight, Mail } from 'lucide-react'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { toast } from '@/hooks/use-toast'
@@ -9,6 +9,13 @@ const Index = () => {
   const [email, setEmail] = useState('')
   const [loading, setLoading] = useState(false)
   const [turnstileToken, setTurnstileToken] = useState<string | null>(null)
+
+  // Recupera a chave e garante que seja uma string
+  const siteKey = import.meta.env.VITE_CLOUDFLARE_TURNSTILE_SITE_KEY || '1x00000000000000000000AA';
+  
+  useEffect(() => {
+    console.log('Configured Turnstile Site Key:', siteKey);
+  }, [siteKey]);
 
   // Tratamento para garantir que o componente Turnstile seja uma função válida
   const TurnstileComponent = (Turnstile as any).default || Turnstile;
@@ -87,8 +94,6 @@ const Index = () => {
     }
   }
 
-  const turnstileSiteKey = String(import.meta.env.VITE_CLOUDFLARE_TURNSTILE_SITE_KEY || '1x00000000000000000000AA');
-
   return (
     <main className="relative min-h-screen overflow-hidden bg-background bg-hero">
       <div className="absolute inset-0 bg-grid opacity-60" aria-hidden="true" />
@@ -136,10 +141,9 @@ const Index = () => {
           </div>
 
           <div className="flex justify-center mt-2">
-            {typeof TurnstileComponent === 'function' && (
+            {siteKey && typeof TurnstileComponent === 'function' && (
               <TurnstileComponent
-                sitekey={turnstileSiteKey}
-                siteKey={turnstileSiteKey}
+                sitekey={siteKey}
                 onVerify={(token: string) => setTurnstileToken(token)}
                 onExpire={() => setTurnstileToken(null)}
                 theme="light"
