@@ -1,4 +1,3 @@
-import { MessageCircle } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 
 const Index = () => {
@@ -21,9 +20,9 @@ const Index = () => {
       {/* Hero */}
       <section className="relative z-10 mx-auto flex min-h-[calc(100vh-96px)] w-full max-w-4xl flex-col items-center justify-center px-6 pb-20 text-center">
         <h1 className="font-display text-5xl font-bold leading-[1.05] tracking-tight text-foreground sm:text-6xl md:text-7xl">
-          Tecnologia que impulsiona
+          Algo novo está sendo
           <br />
-          <span className="text-gradient">o seu negócio.</span>
+          <span className="text-gradient">construído.</span>
         </h1>
 
         <p className="mt-8 max-w-2xl text-lg leading-relaxed text-muted-foreground sm:text-xl">
@@ -34,14 +33,14 @@ const Index = () => {
 
         {/* Stack Highlights */}
         <div className="mt-8 flex flex-wrap justify-center gap-x-6 gap-y-3 font-mono text-sm sm:text-base">
-          <span className="text-brand/80">#Declaradata</span>
-          <span className="text-brand/80">#Integradata</span>
-          <span className="text-brand/80">#Pontodata</span>
-          <span className="text-brand/80">#Rastreiadata</span>
+          <span className="text-brand/80 font-medium">#Declaradata</span>
+          <span className="text-brand/80 font-medium">#Integradata</span>
+          <span className="text-brand/80 font-medium">#Pontodata</span>
+          <span className="text-brand/80 font-medium">#Rastreiadata</span>
         </div>
 
         <p className="mt-10 max-w-xl text-base text-muted-foreground">
-          Prepare-se para o lançamento da nossa nova plataforma. 
+          Prepare-se para uma nova experiência tecnológica.
           <br />
           Quer conhecer esses módulos em primeira mão?
         </p>
@@ -49,9 +48,8 @@ const Index = () => {
         <div className="mt-10">
           <Button
             onClick={() => window.open(whatsappUrl, '_blank')}
-            className="group h-14 bg-brand hover:bg-brand/90 px-10 text-lg font-semibold text-brand-foreground shadow-glow transition-all hover:shadow-[0_0_40px_hsl(var(--brand)/0.4)]"
+            className="h-14 bg-white hover:bg-white/90 px-12 text-lg font-bold text-black shadow-glow transition-all hover:shadow-[0_0_40px_rgba(255,255,255,0.3)]"
           >
-            <MessageCircle className="mr-2 h-6 w-6 transition-transform group-hover:rotate-12" />
             Saiba Mais
           </Button>
         </div>
