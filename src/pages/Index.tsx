@@ -2,7 +2,7 @@ import { Button } from '@/components/ui/button'
 
 const Index = () => {
   const whatsappNumber = import.meta.env.VITE_WHATSAPP_NUMBER || '5500000000000'
-  const whatsappMessage = encodeURIComponent('Olá! Gostaria de saber mais sobre as soluções da CEDSoft, especialmente sobre os módulos Data.')
+  const whatsappMessage = encodeURIComponent('Olá! Gostaria de saber mais sobre as soluções da CEDSoft Informática.')
   const whatsappUrl = `https://wa.me/${whatsappNumber}?text=${whatsappMessage}`
 
   return (
@@ -13,7 +13,7 @@ const Index = () => {
       {/* Top bar */}
       <header className="relative z-10 mx-auto flex w-full max-w-6xl items-center justify-between px-6 py-6">
         <span className="font-display text-lg font-semibold tracking-tight text-foreground">
-          CEDSoft <span className="text-muted-foreground font-normal">Soluções</span>
+          CEDSoft <span className="text-muted-foreground font-normal">Informática</span>
         </span>
       </header>
 
@@ -26,7 +26,7 @@ const Index = () => {
         </h1>
 
         <p className="mt-8 max-w-2xl text-lg leading-relaxed text-muted-foreground sm:text-xl">
-          A <span className="font-medium text-foreground">CEDSoft Soluções</span> está desenvolvendo 
+          A <span className="font-medium text-foreground">CEDSoft Informática</span> está desenvolvendo 
           soluções modernas em software, focadas em inteligência e eficiência operacional. 
           Estamos expandindo nossa stack de inovações:
         </p>
@@ -57,7 +57,7 @@ const Index = () => {
 
       {/* Footer */}
       <footer className="absolute bottom-0 left-0 right-0 z-10 mx-auto flex w-full max-w-6xl items-center justify-center px-6 py-6 font-mono text-xs text-muted-foreground/70">
-        <span>© {new Date().getFullYear()} CEDSoft Soluções</span>
+        <span>© {new Date().getFullYear()} CEDSoft Informática</span>
       </footer>
     </main>
   )
