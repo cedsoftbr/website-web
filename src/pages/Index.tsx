@@ -33,10 +33,12 @@ const Index = () => {
 
         {/* Stack Highlights */}
         <div className="mt-8 flex flex-wrap justify-center gap-x-6 gap-y-3 font-mono text-sm sm:text-base">
-          <span className="text-brand/80 font-medium">#Declaradata</span>
-          <span className="text-brand/80 font-medium">#Integradata</span>
-          <span className="text-brand/80 font-medium">#Pontodata</span>
-          <span className="text-brand/80 font-medium">#Rastreiadata</span>
+          <span className="text-brand/80 font-medium">#DeclaraçãoDeConteúdo</span>
+          <span className="text-brand/80 font-medium">#ConhecimentoDeTransporte</span>
+          <span className="text-brand/80 font-medium">#ManifestoDeCargas</span>
+          <span className="text-brand/80 font-medium">#IntegraçãoDeSistemas</span>
+          <span className="text-brand/80 font-medium">#PontoEletrônico</span>
+          <span className="text-brand/80 font-medium">#GestãoDeFronta</span>
         </div>
 
         <p className="mt-10 max-w-xl text-base text-muted-foreground">
